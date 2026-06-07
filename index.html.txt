@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Speed Typing Test | Check Your WPM</title>
+  <style>
+    :root {
+      --primary: #3295db;
+      --bg: #f4f7f6;
+      --card-bg: #ffffff;
+      --text: #333333;
+      --correct: #2ecc71;
+      --incorrect: #e74c3c;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 800px;
+      width: 100%;
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      margin-top: 40px;
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 30px;
+    }
+
+    .stats-container {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+      background: #f8fafc;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .stat-box {
+      text-align: center;
+    }
+
+    .stat-val {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      color: #7f8c8d;
+      letter-spacing: 1px;
+    }
+
+    .text-display {
+      font-size: 1.35rem;
+      line-height: 1.6;
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
+      word-break: break-word;
+      user-select: none;
+    }
+
+    .correct-char {
+      color: var(--correct);
+      background-color: rgba(46, 204, 113, 0.1);
+    }
+
+    .incorrect-char {
+      color: var(--incorrect);
+      background-color: rgba(231, 76, 60, 0.1);
+      text-decoration: underline;
+    }
+
+    .current-char {
+      background-color: #ffeaa7;
+      border-left: 2px solid #fdcb6e;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 15px;
+      font-size: 1.1rem;
+      border: 2px solid #cbd5e1;
+      border-radius: 8px;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .input-field:focus {
+      border-color: var(--primary);
+    }
+
+    .btn-btn {
+      display: block;
+      width: 150px;
+      margin: 20px auto 0 auto;
+      padding: 12px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: opacity 0.2s;
+    }
+
+    .btn-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* AdSense SEO Section Layout */
+    .seo-content {
+      max-width: 800px;
+      width: 100%;
+      margin-top: 40px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Online Typing Speed Test</h1>
+    
+    <div class="stats-container">
+      <div class="stat-box">
+        <div id="timer" class="stat-val">60</div>
+        <div class="stat-label">Time (s)</div>
+      </div>
+      <div class="stat-box">
+        <div id="wpm" class="stat-val">0</div>
+        <div class="stat-label">WPM</div>
+      </div>
+      <div class="stat-box">
+        <div id="accuracy" class="stat-val">100%</div>
+        <div class="stat-label">Accuracy</div>
+      </div>
+    </div>
+
+    <div id="textDisplay" class="text-display"></div>
+    <input type="text" id="inputField" class="input-field" placeholder="Click here and start typing to begin the test..." autofocus autocomplete="off">
+    
+    <button id="resetBtn" class="btn-btn">Restart Test</button>
+  </div>
+
+  <hr style="width:100%; max-width:800px; margin-top:50px; border:0; border-top:1px solid #cbd5e1;">
+  
+  <div class="seo-content">
+    <h2>How to Calculate Your Typing Speed (WPM)</h2>
+    <p>Our completely free Words Per Minute (WPM) tool tracks your typing mechanics globally in real-time. Standard WPM is calculated by taking the total number of characters typed, dividing that figure by 5 (the accepted standard word length), and then normalizing it against the elapsed time duration.</p>
+    
+    <h3>Tips for Improving Accuracy and Form</h3>
+    <ul>
+      <li><strong>Home Row Positioning:</strong> Always return your fingers to the home row positions (ASDF and JKL;).</li>
+      <li><strong>Maintain Rhythm:</strong> Focus on smooth, steady keystrokes rather than fast bursts. Accuracy naturally leads to higher baseline speeds.</li>
+      <li><strong>Ergonomics:</strong> Keep your wrists straight, sit up straight, and look straight into the screen text display field instead of downwards toward individual keys.</li>
+    </ul>
+  </div>
+
+  <script>
+    const sampleTexts = [
+      "The quick brown fox jumps over the lazy dog. Continuous practice is the foundational key to mastering rapid keyboard input over extended durations.",
+      "Developing software applications requires extreme patience, systematic critical thinking skills, and a solid understanding of logic structures.",
+      "Navigating modern technological landscapes presents unique challenges but opens up boundless opportunities for digital innovation worldwide.",
+      "Climbing high mountain passes demands careful pacing, robust safety equipment, and absolute awareness of shifting environmental factors."
+    ];
+
+    let timer = 60;
+    let maxTime = 60;
+    let timeLeft = maxTime;
+    let charIndex = 0;
+    let mistakes = 0;
+    let isTyping = false;
+    let intervalId;
+
+    const textDisplay = document.getElementById("textDisplay");
+    const inputField = document.getElementById("inputField");
+    const timerVal = document.getElementById("timer");
+    const wpmVal = document.getElementById("wpm");
+    const accuracyVal = document.getElementById("accuracy");
+    const resetBtn = document.getElementById("resetBtn");
+
+    function loadParagraph() {
+      const randIndex = Math.floor(Math.random() * sampleTexts.length);
+      textDisplay.innerHTML = "";
+      sampleTexts[randIndex].split("").forEach(char => {
+        let span = `<span>${char}</span>`;
+        textDisplay.innerHTML += span;
+      });
+      textDisplay.querySelectorAll("span")[0].classList.add("current-char");
+      inputField.value = "";
+      clearInterval(intervalId);
+      timeLeft = maxTime;
+      charIndex = mistakes = 0;
+      isTyping = false;
+      timerVal.innerText = timeLeft;
+      wpmVal.innerText = 0;
+      accuracyVal.innerText = "100%";
+    }
+
+    function initTyping() {
+      const characters = textDisplay.querySelectorAll("span");
+      let typedChar = inputField.value.split("")[charIndex];
+
+      if(charIndex < characters.length && timeLeft > 0) {
+        if(!isTyping) {
+          intervalId = setInterval(startTimer, 1000);
+          isTyping = true;
+        }
+
+        if(typedChar == null) { // Handle backspace
+          if(charIndex > 0) {
+            characters[charIndex].classList.remove("current-char");
+            charIndex--;
+            if(characters[charIndex].classList.contains("incorrect-char")) {
+              mistakes--;
+            }
+            characters[charIndex].classList.remove("correct-char", "incorrect-char");
+            characters[charIndex].classList.add("current-char");
+          }
+        } else {
+          if(characters[charIndex].innerText === typedChar) {
+            characters[charIndex].classList.add("correct-char");
+          } else {
+            mistakes++;
+            characters[charIndex].classList.add("incorrect-char");
+          }
+          characters[charIndex].classList.remove("current-char");
+          charIndex++;
+          if(charIndex < characters.length) {
+            characters[charIndex].classList.add("current-char");
+          }
+        }
+
+        // Live stats calculations
+        let wpm = Math.round((((charIndex - mistakes) / 5) / (maxTime - timeLeft)) * 60);
+        wpm = wpm < 0 || !wpm || wpm === Infinity ? 0 : wpm;
+        wpmVal.innerText = wpm;
+
+        let acc = Math.round(((charIndex - mistakes) / charIndex) * 100);
+        if(charIndex === 0) acc = 100;
+        accuracyVal.innerText = `${acc < 0 ? 0 : acc}%`;
+      } else {
+        clearInterval(intervalId);
+        inputField.value = "";
+      }
+    }
+
+    function startTimer() {
+      if(timeLeft > 0) {
+        timeLeft--;
+        timerVal.innerText = timeLeft;
+        let wpm = Math.round((((charIndex - mistakes) / 5) / (maxTime - timeLeft)) * 60);
+        wpmVal.innerText = wpm;
+      } else {
+        clearInterval(intervalId);
+      }
+    }
+
+    inputField.addEventListener("input", initTyping);
+    resetBtn.addEventListener("click", loadParagraph);
+
+    // Bootstrap first load
+    loadParagraph();
+  </script>
+</body>
+</html>
